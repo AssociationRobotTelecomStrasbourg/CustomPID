@@ -19,9 +19,9 @@ public:
 
 	//Computes the next output value, needs to first update the input with setInput, and then get new value with getOutput
 	bool compute();
-	void setInput(const float input);
-	void setReference(const float reference);
-	float getOutput();
+	inline void setInput(const float input) {_input = input;};
+	inline void setReference(const float reference) {_setpoint = reference;};
+	inline float getOutput() {return _output;};
 
 	//Sets the limits for the generated output signal
 	void setOutputLimits(const float min, const float max);

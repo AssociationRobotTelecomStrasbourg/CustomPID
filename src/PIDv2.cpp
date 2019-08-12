@@ -51,18 +51,6 @@ bool PID::compute(){
 	}
 }
 
-void PID::setInput(const float input){
-	_input = input;
-}
-
-void PID::setReference(const float reference){
-	_setpoint = reference;
-}
-
-float PID::getOutput(){
-	return _output;
-}
-
 void PID::initialize(){
 	_integral = _output;
 	_last_input = _input;
