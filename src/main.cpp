@@ -15,7 +15,7 @@ uint32_t time;
 DriveMotor motor1(IN4, IN3);
 Encoder enc(ENC_A1, ENC_B1);
 
-PID myPID(6, 0, 0, sample_time);
+PID myPID(16, 0.6, 1.1, sample_time);
 
 void setup() {
 	delay(5000);
@@ -32,9 +32,9 @@ void setup() {
 	myPID.setOutputLimits(-max_pwm, max_pwm);
 
 	myPID.setInput(enc.read());
-	myPID.setReference(1200);
+	myPID.setReference(2400.0);
 
-	myPID.setMode(AUTOMATIC);
+	myPID.setMode(MANUAL);
 
 	time = millis();
 }

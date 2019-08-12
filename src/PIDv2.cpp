@@ -14,7 +14,7 @@ void PID::setMode(const uint8_t mode){
 }
 
 bool PID::compute(){
-	return _mode; //if mode == 0, exit function and return false
+	if (_mode == MANUAL) return 0;
 
 	uint32_t now = millis();
 	uint32_t time_change = (now - _last_time);
