@@ -6,6 +6,8 @@
 
 const uint8_t AUTOMATIC {1};
 const uint8_t MANUAL {0};
+const uint8_t DIRECT {1};
+const uint8_t REVERSE {0};
 
 class PID{
 
@@ -51,7 +53,7 @@ private:
 	float _out_max, _out_min;
 
 	uint32_t _sample_time, _last_time;
-	uint8_t _mode;
+	uint8_t _mode, _direction;
 };
 
 #endif

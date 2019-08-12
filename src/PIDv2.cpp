@@ -1,7 +1,7 @@
 #include "PIDv2.h"
 
 PID::PID(const float kp, const float ki, const float kd, const uint32_t sampleTime)
-	: _kp(kp), _ki(ki), _kd(kd), _sample_time(sampleTime), _mode(MANUAL){
+	: _kp(kp), _ki(ki), _kd(kd), _sample_time(sampleTime), _mode(MANUAL), _direction(DIRECT){
 }
 
 void PID::setMode(const uint8_t mode){
@@ -64,13 +64,35 @@ void PID::setOutputLimits(float min, float max){
 
   	if(_mode)
   	{
-		if (output > _out_max){
-  		  _integral -= output - _out_max;
-  		  output = _out_max;
+		if (_output > _out_max){
+  		  _integral -= _output - _out_max;
+  		  _output = _out_max;
   	  }
-  	  else if (output < _out_min){
-  		  _integral += _out_min - output;
-  		  output = _out_min;
+  	  else if (_output < _out_min){
+  		  _integral += _out_min - _output;
+  		  _output = _out_min;
   	  }
   	}
+}
+
+void PID::setTunings(const float kp, const float ki, const float kd){
+	if (kp<0 || ki<0 || kd<0) return;
+
+	_kp = kp;
+	_ki = ki * _sample_time;
+	_kd = kd / _sample_time;
+
+	if (_direction == REVERSE){
+		_kp = -_kp;
+		_ki = -_ki;
+		_kd = -_kd;
+	}
+}
+
+void PID::reverse(){
+	_kp = -_kp;
+	_ki = -_ki;
+	_kd = -_kd;
+	if (_direction == DIRECT) _direction = REVERSE;
+	else _direction = DIRECT;
 }
