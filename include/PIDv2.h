@@ -27,6 +27,18 @@ public:
 	//Sets the limits for the generated output signal
 	void setOutputLimits(const float min, const float max);
 
+	//Sets the PID parameters
+	void setTunings(const float kp, const float ki, const float kd);
+
+	//Reverse the PID direction
+	void reverse();
+
+	//Functions for display purposes
+	inline float kp(){return _kp;};
+	inline float ki(){return _ki;};
+	inline float kd(){return _kd;};
+	inline float sampleTime(){return _sample_time;};
+
 protected:
 
 	//Used by the class to resume AUTOMATIC PID function after MANUAL override
