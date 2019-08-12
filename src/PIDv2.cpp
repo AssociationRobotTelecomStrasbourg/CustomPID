@@ -2,7 +2,6 @@
 
 PID::PID(const float kp, const float ki, const float kd, const uint32_t sampleTime)
 	: _kp(kp), _ki(ki), _kd(kd), _sample_time(sampleTime), _mode(MANUAL){
-
 }
 
 void PID::setMode(const uint8_t mode){
@@ -65,6 +64,13 @@ void PID::setOutputLimits(float min, float max){
 
   	if(_mode)
   	{
-	  //Clamp output and integral
+		if (output > _out_max){
+  		  _integral -= output - _out_max;
+  		  output = _out_max;
+  	  }
+  	  else if (output < _out_min){
+  		  _integral += _out_min - output;
+  		  output = _out_min;
+  	  }
   	}
 }
