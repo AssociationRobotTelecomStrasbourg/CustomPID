@@ -18,6 +18,7 @@ public:
 	void setMode(const uint8_t mode);
 
 	//Computes the next output value, needs to first update the input with setInput, and then get new value with getOutput
+	//This implementation prevent side-effects and makes implementation in libraries easier.
 	bool compute();
 	inline void setInput(const float input) {_input = input;};
 	inline void setReference(const float reference) {_setpoint = reference;};

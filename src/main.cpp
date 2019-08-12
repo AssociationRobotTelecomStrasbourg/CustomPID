@@ -19,10 +19,10 @@ PID myPID(16, 0.6, 1.1, sample_time);
 
 void setup() {
 	delay(5000);
-    Serial.begin(9600);
-    Serial.println("Starting PID Test");
-    pinMode(DEBUG, OUTPUT);
-    digitalWrite(DEBUG, HIGH);
+	Serial.begin(9600);
+	Serial.println("Starting PID Test");
+	pinMode(DEBUG, OUTPUT);
+	digitalWrite(DEBUG, HIGH);
 
 	res = motor1.get_res();
 	float max_pwm = 2<<(res-1);
@@ -34,19 +34,19 @@ void setup() {
 	myPID.setInput(enc.read());
 	myPID.setReference(2400.0);
 
-	myPID.setMode(MANUAL);
+	myPID.setMode(AUTOMATIC);
 
 	time = millis();
 }
 
 void loop() {
-  myPID.setInput(enc.read());
-  myPID.compute();
-  motor1.set_pwm(int16_t(myPID.getOutput()));
-  if (millis() - time > display_time) {
-	  time += display_time;
-	  Serial.print(enc.read());
-	  Serial.print(" ");
-	  Serial.println(myPID.getOutput());
+	myPID.setInput(enc.read());
+	myPID.compute();
+	motor1.set_pwm(int16_t(myPID.getOutput()));
+	if (millis() - time > display_time) {
+		time += display_time;
+		Serial.print(enc.read());
+		Serial.print(" ");
+		Serial.println(myPID.getOutput());
   }
 }
