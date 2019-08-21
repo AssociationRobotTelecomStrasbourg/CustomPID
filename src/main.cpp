@@ -1,4 +1,4 @@
-#include <Arduinmaino.h>
+#include <Arduino.h>
 #include <Encoder.h>
 #include "PIDv2.h"
 
