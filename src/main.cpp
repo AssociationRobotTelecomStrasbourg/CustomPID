@@ -5,6 +5,8 @@
 #include "drive_motor/DriveMotor.h"
 #include "miniKiwiPins.h"
 
+//Example code, using the library to do position control of a DC motor
+
 uint8_t res = 0;
 const uint16_t max_pwm = 0;
 
@@ -15,6 +17,7 @@ uint32_t time;
 DriveMotor motor1(IN4, IN3);
 Encoder enc(ENC_A1, ENC_B1);
 
+//Initializing the PID object
 PID myPID(16, 0.6, 1.1, sample_time);
 
 void setup() {
@@ -29,20 +32,26 @@ void setup() {
 	Serial.print("Max PWM value calculated : +-");
 	Serial.println(max_pwm);
 
+	//After calculating the pwm values using the set pwm resolution, we set the limits of the PWM output
 	myPID.setOutputLimits(-max_pwm, max_pwm);
 
+	//Then, initialize the input by reading the encoder, and setting the desired value to 2400 (2 turns)
 	myPID.setInput(enc.read());
 	myPID.setReference(2400.0);
 
+	//Setting mode to AUTOMATIC turns on the PID
 	myPID.setMode(AUTOMATIC);
 
 	time = millis();
 }
 
 void loop() {
+	//Main loop needs to run these computation, using get/set for the input/outputs of the PID and calling the compute() function
 	myPID.setInput(enc.read());
 	myPID.compute();
 	motor1.set_pwm(int16_t(myPID.getOutput()));
+
+	//Code used to display the values at a different refresh rate of the PID
 	if (millis() - time > display_time) {
 		time += display_time;
 		Serial.print(enc.read());
