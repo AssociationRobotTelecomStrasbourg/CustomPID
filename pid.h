@@ -1,18 +1,15 @@
-#ifndef PIDV2_H
-#define PIDV2_H
+#ifndef PID_H
+#define PID_H
 
 #include <stdint.h>
-#include <Arduino.h>
 
-const uint8_t AUTOMATIC {1};
-const uint8_t MANUAL {0};
-const uint8_t DIRECT {1};
-const uint8_t REVERSE {0};
+const uint8_t AUTOMATIC = 1;
+const uint8_t MANUAL = 0;
+const uint8_t DIRECT = 1;
+const uint8_t REVERSE = 0;
 
 class PID{
-
 public:
-
 	//PID constructor, initializes main variables.
 	PID(const float kp, const float ki, const float kd, const uint32_t sampleTime);
 
@@ -21,7 +18,7 @@ public:
 
 	//Computes the next output value, needs to first update the input with setInput, and then get new value with getOutput
 	//This implementation prevent side-effects and makes implementation in libraries easier.
-	bool compute();
+	bool compute(const uint32_t time);
 	inline void setInput(const float input) {_input = input;};
 	inline void setReference(const float reference) {_setpoint = reference;};
 	inline float getOutput() {return _output;};
@@ -36,17 +33,15 @@ public:
 	void reverse();
 
 	//Functions for display purposes
-	inline float kp(){return _kp;};
-	inline float ki(){return _ki;};
-	inline float kd(){return _kd;};
-	inline float sampleTime(){return _sample_time;};
+	inline float kp() {return _kp;};
+	inline float ki() {return _ki;};
+	inline float kd() {return _kd;};
+	inline float sampleTime() {return _sample_time;};
 
-protected:
-
+private:
 	//Used by the class to resume AUTOMATIC PID function after MANUAL override
 	void initialize();
 
-private:
 	float _kp, _ki, _kd;
 	float _input, _output, _setpoint;
 	float _integral, _last_input;
