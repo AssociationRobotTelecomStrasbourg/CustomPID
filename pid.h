@@ -5,42 +5,44 @@
 
 class PID{
 public:
-	//PID constructor, initializes main variables.
-	PID(const float kp, const float ki, const float kd, const uint32_t sampleTime);
+    // Initialize the PID class
+    PID(const float kp, const float ki, const float kd, const uint32_t sample_time);
 
-	//Used to pause and resume PID, MANUAL or AUTOMATIC
-	void setMode(const bool mode);
+    // Sets the limits for the generated output signal
+    void setOutputLimits(const float min, const float max);
 
-	//Computes the next output value, needs to first update the input with setInput, and then get new value with getOutput
-	//This implementation prevent side-effects and makes implementation in libraries easier.
-	void compute(const uint32_t time);
-	inline void setInput(const float input) {_input = input;};
-	inline void setReference(const float reference) {_setpoint = reference;};
-	inline float getOutput() {return _output;};
+    //Sets the PID parameters
+    void setTunings(const float kp, const float ki, const float kd);
 
-	//Sets the limits for the generated output signal
-	void setOutputLimits(const float min, const float max);
+    //Used by the class to resume AUTOMATIC PID function after MANUAL override
+    void initialize();
 
-	//Sets the PID parameters
-	void setTunings(const float kp, const float ki, const float kd);
+    //Used to pause and resume PID, MANUAL or AUTOMATIC
+    void setMode(const bool mode);
 
-	//Functions for display purposes
-	inline float kp() {return _kp;};
-	inline float ki() {return _ki;};
-	inline float kd() {return _kd;};
-	inline float sampleTime() {return _sample_time;};
+    // Computes the next output value, needs to first update the input with setInput, and then get new value with getOutput
+    // This implementation prevent side-effects and makes implementation in libraries easier.
+    void compute(const uint32_t time);
+
+    // Set the PID variables
+    void setInput(const float input);
+    void setReference(const float reference);
+    void setOutput(const float output);
+    void setIntegral(const float integral);
+
+    // Get the PID variables
+    float getInput() const;
+    float getReference() const;
+    float getOutput() const;
+    float getIntegral() const;
 
 private:
-	//Used by the class to resume AUTOMATIC PID function after MANUAL override
-	void initialize();
-
-	float _kp, _ki, _kd;
-	float _input, _output, _setpoint;
-	float _integral, _last_input;
-	float _out_max, _out_min;
-
-	uint32_t _sample_time, _last_time;
-	bool _mode;
+    float _kp, _ki, _kd; // PID settings
+    uint32_t _sample_time, _last_time;
+    bool _mode;
+    float _input, _output, _setpoint;
+    float _integral, _last_input;
+    float _out_max, _out_min;
 };
 
 #endif
