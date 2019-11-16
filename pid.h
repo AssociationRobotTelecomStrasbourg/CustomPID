@@ -5,44 +5,43 @@
 
 class PID{
 public:
-    // Initialize the PID class
-    PID(const float kp, const float ki, const float kd, const uint32_t sample_time);
+	// Initialize the PID class
+	PID(const float kp, const float ki, const float kd, const uint32_t sample_time);
 
-    // Sets the limits for the generated output signal
-    void setOutputLimits(const float min, const float max);
+	// Set the limits for the generated output signal
+	void setOutputLimits(const float min, const float max);
 
-    //Sets the PID parameters
-    void setTunings(const float kp, const float ki, const float kd);
+	// Set the PID tuning parameters
+	void setTunings(const float kp, const float ki, const float kd);
 
-    //Used by the class to resume AUTOMATIC PID function after MANUAL override
-    void initialize();
+	// Used by the class to resume AUTOMATIC PID function after MANUAL override
+	void initialize();
 
-    //Used to pause and resume PID, MANUAL or AUTOMATIC
-    void setMode(const bool mode);
+	// Used to pause and resume PID, MANUAL or AUTOMATIC
+	void setMode(const bool mode);
 
-    // Computes the next output value, needs to first update the input with setInput, and then get new value with getOutput
-    // This implementation prevent side-effects and makes implementation in libraries easier.
-    void compute(const uint32_t time);
+	// Computes the new output value
+	void compute();
 
-    // Set the PID variables
-    void setInput(const float input);
-    void setReference(const float reference);
-    void setOutput(const float output);
-    void setIntegral(const float integral);
+	// Set the PID variables
+	void setInput(const float input);
+	void setReference(const float reference);
+	void setOutput(const float output);
+	void setIntegral(const float integral);
 
-    // Get the PID variables
-    float getInput() const;
-    float getReference() const;
-    float getOutput() const;
-    float getIntegral() const;
+	// Get the PID variables
+	float getInput() const;
+	float getReference() const;
+	float getOutput() const;
+	float getIntegral() const;
 
 private:
-    float _kp, _ki, _kd; // PID settings
-    uint32_t _sample_time, _last_time;
-    bool _mode;
-    float _input, _output, _setpoint;
-    float _integral, _last_input;
-    float _out_max, _out_min;
+	float _kp, _ki, _kd; // PID settings
+	uint32_t _sample_time, _last_time;
+	bool _mode;
+	float _input, _output, _setpoint;
+	float _integral, _last_input;
+	float _out_max, _out_min;
 };
 
 #endif
