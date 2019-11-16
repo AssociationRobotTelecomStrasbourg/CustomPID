@@ -1,24 +1,23 @@
 #include "pid.h"
 
 PID::PID(const float kp, const float ki, const float kd, const uint32_t sampleTime) :
-_sample_time(sampleTime), _mode(MANUAL), _direction(DIRECT),
+_sample_time(sampleTime), _mode(true),
 _input(0), _output(0), _setpoint(0) {
 	this->setOutputLimits(-255, 255);
 	this->setTunings(kp, ki, kd);
+	this->initialize();
 }
 
-void PID::setMode(const uint8_t mode){
-	uint8_t new_mode = mode;
-	if (new_mode != _mode)
+void PID::setMode(const bool mode){
+	// Initialize if the we enable
+	if (mode && !_mode)
 		this->initialize();
 
-	_mode = new_mode;
+	_mode = mode;
 }
 
 void PID::compute(const uint32_t time) {
-	if (_mode == MANUAL) return 0;
-
-	if (time - _last_time >= _sample_time){
+	if (_mode && time - _last_time >= _sample_time){
 		//Compute the error and working variables:
 		float error = _setpoint - _input;
 		_integral += (_ki * error);
@@ -75,23 +74,7 @@ void PID::setOutputLimits(float min, float max){
 }
 
 void PID::setTunings(const float kp, const float ki, const float kd){
-	if (kp<0 || ki<0 || kd<0) return;
-
 	_kp = kp;
 	_ki = ki * _sample_time;
 	_kd = kd / _sample_time;
-
-	if (_direction == REVERSE){
-		_kp = -_kp;
-		_ki = -_ki;
-		_kd = -_kd;
-	}
-}
-
-void PID::reverse(){
-	_kp = -_kp;
-	_ki = -_ki;
-	_kd = -_kd;
-	if (_direction == DIRECT) _direction = REVERSE;
-	else _direction = DIRECT;
 }
