@@ -64,7 +64,7 @@ void PID::compute(const uint32_t time) {
 
         //Remember some variables for next time
         _last_input = _input;
-        _last_time += _sample_time;
+        _last_time = time;
     }
 }
 
