@@ -1,9 +1,16 @@
 #include "pid.h"
 
-PID::PID(const float kp, const float ki, const float kd, const uint32_t sampleTime) :
-_sample_time(sampleTime), _mode(false), _input(0), _output(0), _setpoint(0) {
+PID::PID(const float kp, const float ki, const float kd) : _mode(false), _anti_windup(true), _input(0), _output(0), _setpoint(0) {
 	this->setOutputLimits(-255, 255);
 	this->setTunings(kp, ki, kd);
+}
+
+void PID::setMode(const bool mode) {
+	// Initialize if mode is enabled
+	if (mode && !_mode)
+		this->initialize();
+
+	_mode = mode;
 }
 
 void PID::setOutputLimits(float min, float max) {
@@ -18,6 +25,10 @@ void PID::setOutputLimits(float min, float max) {
 	}
 }
 
+void PID::setAntiWindup(const bool anti_windup) {
+	_anti_windup = anti_windup;
+}
+
 void PID::setTunings(const float kp, const float ki, const float kd) {
 	_kp = kp;
 	_ki = ki;
@@ -27,19 +38,6 @@ void PID::setTunings(const float kp, const float ki, const float kd) {
 void PID::initialize() {
 	_integral = _output;
 	_last_input = _input;
-
-	if (_integral > _out_max)
-		_integral = _out_max;
-	else if (_integral < _out_min)
-		_integral = _out_min;
-}
-
-void PID::setMode(const bool mode) {
-	// Initialize if mode is enabled
-	if (mode && !_mode)
-		this->initialize();
-
-	_mode = mode;
 }
 
 void PID::compute() {
@@ -52,14 +50,16 @@ void PID::compute() {
 		// Compute PID output
 		_output = _kp * error + _integral - _kd * d_input;
 
-		// Clamping integral and output (anti-windup and saturation)
+		// Saturate output and apply anti-windup if activated
 		if (_output > _out_max){
-			_integral -= (_ki * error);
 			_output = _out_max;
+			if (_anti_windup)
+				_integral -= (_ki * error); // Reset integral term
 		}
 		else if (_output < _out_min){
-			_integral -= (_ki * error);
 			_output = _out_min;
+			if (_anti_windup)
+				_integral -= (_ki * error);
 		}
 
 		// Remember some variables for next time
@@ -71,7 +71,7 @@ void PID::setInput(const float input) {
 	_input = input;
 }
 
-void PID::setReference(const float reference) {
+void PID::setSetpoint(const float reference) {
 	_setpoint = reference;
 }
 
@@ -87,7 +87,7 @@ float PID::getInput() const {
 	return _input;
 }
 
-float PID::getReference() const {
+float PID::getSetpoint() const {
 	return _setpoint;
 }
 
